@@ -17,7 +17,12 @@
   };
 
   function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
-  function num(el, fallback = 0) { const n = Number(el.value); return Number.isFinite(n) ? n : fallback; }
+  function num(el, fallback = 0) {
+    const raw = String(el.value ?? "").trim();
+    if (raw === "") return fallback;
+    const n = Number(raw);
+    return Number.isFinite(n) ? n : fallback;
+  }
   function futureValue(amount, ratePct, years) { return amount * Math.pow(1 + ratePct / 100, years); }
   function presentEquivalent(amount, ratePct, years) { return amount / Math.pow(1 + ratePct / 100, years); }
   function pct(value, digits = 0) { return `${Number(value).toFixed(digits)}%`; }
@@ -53,8 +58,6 @@
 
   function compute() {
     const s = getState();
-    els.yearsInput.value = s.years;
-    els.inflationInput.value = s.rate;
     const factor = Math.pow(1 + s.rate / 100, s.years);
     const future = s.amount * factor;
     const sameNominalToday = presentEquivalent(s.amount, s.rate, s.years);
@@ -239,6 +242,18 @@
   els.currencySelect.addEventListener("change", e => L.setCurrency(e.target.value));
   window.addEventListener("carrowmont:localechange", () => { syncLocaleUI(); compute(); });
   [els.amountInput, els.amountType, els.yearsInput, els.inflationInput].forEach(el => el.addEventListener("input", compute));
+
+  // Do not rewrite number fields while the user is typing. In particular, keeping a transient value
+  // such as "5." intact allows the next keystroke to become "5.5" instead of being forced back to "5".
+  function normalizeNumericInputs() {
+    const s = getState();
+    if (String(els.amountInput.value).trim() === "") els.amountInput.value = s.amount;
+    els.yearsInput.value = s.years;
+    els.inflationInput.value = Number(s.rate.toFixed(2)).toString();
+    compute();
+  }
+  [els.yearsInput, els.inflationInput].forEach(el => el.addEventListener("change", normalizeNumericInputs));
+
   els.copySummaryBtn.addEventListener("click", copySummary);
   els.printReportBtn.addEventListener("click", printReport);
   window.addEventListener("beforeprint", () => compute());

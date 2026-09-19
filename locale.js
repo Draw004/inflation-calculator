@@ -4,6 +4,8 @@
   const STORAGE_REGION = "carrowmont_region_v1";
   const STORAGE_CURRENCY = "carrowmont_currency_v1";
 
+  // Country/region profiles control locale-aware formatting and the suggested default currency only.
+  // They do not change inflation assumptions, taxes, pensions, benefits or exchange rates.
   const regions = {
     IN: { label: "India", locale: "en-IN", currency: "INR" },
     US: { label: "United States", locale: "en-US", currency: "USD" },
@@ -11,6 +13,33 @@
     GB: { label: "United Kingdom", locale: "en-GB", currency: "GBP" },
     AU: { label: "Australia", locale: "en-AU", currency: "AUD" },
     NZ: { label: "New Zealand", locale: "en-NZ", currency: "NZD" },
+
+    CN: { label: "China", locale: "zh-CN", currency: "CNY" },
+    JP: { label: "Japan", locale: "ja-JP", currency: "JPY" },
+    KR: { label: "South Korea", locale: "ko-KR", currency: "KRW" },
+    SG: { label: "Singapore", locale: "en-SG", currency: "SGD" },
+    AE: { label: "United Arab Emirates", locale: "en-AE", currency: "AED" },
+    SA: { label: "Saudi Arabia", locale: "ar-SA", currency: "SAR" },
+
+    DE: { label: "Germany", locale: "de-DE", currency: "EUR" },
+    FR: { label: "France", locale: "fr-FR", currency: "EUR" },
+    IT: { label: "Italy", locale: "it-IT", currency: "EUR" },
+    ES: { label: "Spain", locale: "es-ES", currency: "EUR" },
+    CH: { label: "Switzerland", locale: "de-CH", currency: "CHF" },
+
+    BR: { label: "Brazil", locale: "pt-BR", currency: "BRL" },
+    MX: { label: "Mexico", locale: "es-MX", currency: "MXN" },
+    ZA: { label: "South Africa", locale: "en-ZA", currency: "ZAR" },
+    ID: { label: "Indonesia", locale: "id-ID", currency: "IDR" },
+    MY: { label: "Malaysia", locale: "en-MY", currency: "MYR" },
+    TH: { label: "Thailand", locale: "th-TH", currency: "THB" },
+    PH: { label: "Philippines", locale: "en-PH", currency: "PHP" },
+    VN: { label: "Vietnam", locale: "vi-VN", currency: "VND" },
+    HK: { label: "Hong Kong", locale: "zh-HK", currency: "HKD" },
+    TW: { label: "Taiwan", locale: "zh-TW", currency: "TWD" },
+    RU: { label: "Russia", locale: "ru-RU", currency: "RUB" },
+    TR: { label: "Türkiye", locale: "tr-TR", currency: "TRY" },
+
     OTHER: { label: "Other / International", locale: "en-US", currency: "USD" }
   };
 
@@ -22,21 +51,36 @@
     AUD: { label: "Australian Dollar", symbol: "A$" },
     NZD: { label: "New Zealand Dollar", symbol: "NZ$" },
     EUR: { label: "Euro", symbol: "€" },
+    CNY: { label: "Chinese Yuan", symbol: "CN¥" },
+    JPY: { label: "Japanese Yen", symbol: "¥" },
+    KRW: { label: "South Korean Won", symbol: "₩" },
     SGD: { label: "Singapore Dollar", symbol: "S$" },
-    AED: { label: "UAE Dirham", symbol: "AED" }
+    AED: { label: "UAE Dirham", symbol: "AED" },
+    SAR: { label: "Saudi Riyal", symbol: "SAR" },
+    CHF: { label: "Swiss Franc", symbol: "CHF" },
+    BRL: { label: "Brazilian Real", symbol: "R$" },
+    MXN: { label: "Mexican Peso", symbol: "MX$" },
+    ZAR: { label: "South African Rand", symbol: "R" },
+    IDR: { label: "Indonesian Rupiah", symbol: "Rp" },
+    MYR: { label: "Malaysian Ringgit", symbol: "RM" },
+    THB: { label: "Thai Baht", symbol: "฿" },
+    PHP: { label: "Philippine Peso", symbol: "₱" },
+    VND: { label: "Vietnamese Dong", symbol: "₫" },
+    HKD: { label: "Hong Kong Dollar", symbol: "HK$" },
+    TWD: { label: "New Taiwan Dollar", symbol: "NT$" },
+    RUB: { label: "Russian Ruble", symbol: "₽" },
+    TRY: { label: "Turkish Lira", symbol: "₺" }
   };
 
   function detectRegion() {
     const langs = (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || "en-US"])
       .map(String);
     for (const lang of langs) {
-      const upper = lang.toUpperCase();
-      if (upper.endsWith("-IN")) return "IN";
-      if (upper.endsWith("-US")) return "US";
-      if (upper.endsWith("-CA")) return "CA";
-      if (upper.endsWith("-GB") || upper.endsWith("-UK")) return "GB";
-      if (upper.endsWith("-AU")) return "AU";
-      if (upper.endsWith("-NZ")) return "NZ";
+      const upper = lang.toUpperCase().replace("_", "-");
+      const parts = upper.split("-");
+      const country = parts.length > 1 ? parts[parts.length - 1] : "";
+      if (country === "UK") return "GB";
+      if (regions[country]) return country;
     }
     return "OTHER";
   }

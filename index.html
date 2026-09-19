@@ -13,7 +13,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://carrowmont.com/inflation-calculator/" />
   <meta name="twitter:card" content="summary" />
-  <link rel="stylesheet" href="styles.css?v=1.0.0" />
+  <link rel="stylesheet" href="styles.css?v=1.0.1" />
   <script type="application/ld+json">{
     "@context":"https://schema.org",
     "@type":"WebApplication",
@@ -114,8 +114,8 @@
             <small>Choose the number of years between today and the future date you want to model.</small>
           </label>
           <label class="field-card">Annual inflation assumption
-            <div class="number-wrap"><input id="inflationInput" type="number" min="0" max="30" step="0.1" value="5" /><span>%</span></div>
-            <small>This is an assumption you control. Carrowmont does not silently substitute a live or country-specific forecast.</small>
+            <div class="number-wrap"><input id="inflationInput" type="number" min="0" max="30" step="0.1" value="5" inputmode="decimal" /><span>%</span></div>
+            <small>Enter any rate from 0% to 30%, including decimals such as 4.5% or 5.5%. Carrowmont does not silently substitute a live or country-specific forecast.</small>
           </label>
         </div>
         <div class="input-note"><strong>Country vs inflation:</strong> country selection controls formatting and default currency. It does not automatically change your inflation rate, taxes, pension rules or financial assumptions.</div>
@@ -192,9 +192,9 @@
 </footer>
 
 <section class="print-report" id="printReport" aria-hidden="true"></section>
-<script src="site-config.js?v=1.0.0"></script>
-<script src="locale.js?v=1.0.0"></script>
-<script src="site.js?v=1.0.0"></script>
-<script src="app.js?v=1.0.0"></script>
+<script src="site-config.js?v=1.0.1"></script>
+<script src="locale.js?v=1.0.1"></script>
+<script src="site.js?v=1.0.1"></script>
+<script src="app.js?v=1.0.1"></script>
 </body>
 </html>
