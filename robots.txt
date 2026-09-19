@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://carrowmont.com/inflation-calculator/sitemap.xml

@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inflation Calculator | Carrowmont</title>
+  <meta name="description" content="See how inflation can change future costs and purchasing power. Compare scenarios in INR, USD, GBP, CAD, AUD, NZD and other currencies." />
+  <meta name="robots" content="index,follow" />
+  <meta name="theme-color" content="#0e827a" />
+  <link rel="canonical" href="https://carrowmont.com/inflation-calculator/" />
+  <meta property="og:title" content="Inflation Calculator | Carrowmont" />
+  <meta property="og:description" content="Estimate future prices, purchasing power and inflation scenarios in your chosen country and currency." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://carrowmont.com/inflation-calculator/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="stylesheet" href="styles.css?v=1.0.0" />
+  <script type="application/ld+json">{
+    "@context":"https://schema.org",
+    "@type":"WebApplication",
+    "name":"Carrowmont Inflation Calculator",
+    "applicationCategory":"FinanceApplication",
+    "operatingSystem":"Any",
+    "url":"https://carrowmont.com/inflation-calculator/",
+    "description":"Estimate how inflation may affect future costs and purchasing power in multiple currencies."
+  }</script>
+</head>
+<body>
+<header class="site-header">
+  <div class="container header-inner">
+    <div class="brand-cluster">
+      <a class="brand" href="/" aria-label="Carrowmont home"><span class="brand-wordmark">CARROWMONT</span></a>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <a class="product-label" href="index.html">Inflation Calculator</a>
+    </div>
+    <div class="header-actions">
+      <nav class="top-nav" aria-label="Primary navigation">
+        <a href="#calculator">Calculator</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="methodology.html">Methodology</a>
+        <a href="/#tools">All tools</a>
+        <a href="/">Home</a>
+      </nav>
+      <details class="locale-menu" id="localeMenu">
+        <summary id="localeSummary">India · INR</summary>
+        <div class="locale-popover">
+          <h3>Country & currency</h3>
+          <p>Choose the context that makes the numbers easiest to understand.</p>
+          <label>Country / region
+            <select id="regionSelect"></select>
+          </label>
+          <label>Currency
+            <select id="currencySelect"></select>
+          </label>
+          <div class="locale-note"><strong>Important:</strong> changing currency changes the unit and number format. It does not convert your amount using an exchange rate. Inflation is always the rate you enter.</div>
+        </div>
+      </details>
+      <details class="mobile-nav">
+        <summary>Menu</summary>
+        <div class="mobile-nav-links">
+          <a href="/">Carrowmont home</a>
+          <a href="/#tools">All tools</a>
+          <a href="#calculator">Inflation Calculator</a>
+          <a href="#how-it-works">How it works</a>
+          <a href="methodology.html">Methodology</a>
+          <a href="/about.html">About</a>
+          <a href="/contact.html">Contact</a>
+        </div>
+      </details>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="tool-hero">
+    <div class="container tool-breadcrumb"><a href="/#tools">← Back to all Carrowmont tools</a><span>·</span><span>Inflation Calculator</span></div>
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Global inflation planning</span>
+        <h1>See what inflation can do to your money.</h1>
+        <p class="hero-copy">Estimate what today's spending may cost in the future, how much purchasing power the same amount may lose, and how different inflation assumptions change the outcome.</p>
+        <div class="hero-points"><span>Country-aware currency formatting</span><span>Interactive scenarios</span><span>No sign-up required</span></div>
+      </div>
+      <aside class="hero-card">
+        <div class="hero-card-label">Illustrative example</div>
+        <div class="hero-example">
+          <div class="hero-example-row"><span>Amount today</span><strong id="heroExampleToday">₹100,000</strong></div>
+          <div class="hero-example-row"><span>After 20 years at 5%</span><strong id="heroExampleFuture">₹265,330</strong></div>
+          <div class="hero-example-row"><span>Price increase</span><strong>+165%</strong></div>
+        </div>
+        <small>Illustrative only. Change country, currency, years and inflation rate in the calculator below.</small>
+      </aside>
+    </div>
+  </section>
+
+  <section class="calculator-section" id="calculator">
+    <div class="container calculator-grid">
+      <div class="panel input-panel">
+        <div class="panel-heading">
+          <div><span class="section-kicker">Your assumptions</span><h2>Model a future cost</h2><p>Enter an amount in today's money, then choose the time horizon and annual inflation assumption.</p></div>
+        </div>
+
+        <div class="section-rule"></div>
+        <div class="form-grid two-col">
+          <label class="field-card">Amount today
+            <div class="number-wrap money"><span id="currencyPrefix">₹</span><input id="amountInput" type="number" min="0" step="100" value="100000" inputmode="decimal" /></div>
+            <small>This can be a monthly budget, annual expense, tuition fee, home renovation cost or any other amount.</small>
+          </label>
+          <label class="field-card">Amount type
+            <div class="number-wrap"><select id="amountType"><option value="amount">One-time amount</option><option value="monthly" selected>Monthly spending</option><option value="annual">Annual spending</option></select></div>
+            <small>This changes the wording only; the inflation mathematics is the same.</small>
+          </label>
+          <label class="field-card">Years into the future
+            <div class="number-wrap"><input id="yearsInput" type="number" min="1" max="60" step="1" value="20" /><span>years</span></div>
+            <small>Choose the number of years between today and the future date you want to model.</small>
+          </label>
+          <label class="field-card">Annual inflation assumption
+            <div class="number-wrap"><input id="inflationInput" type="number" min="0" max="30" step="0.1" value="5" /><span>%</span></div>
+            <small>This is an assumption you control. Carrowmont does not silently substitute a live or country-specific forecast.</small>
+          </label>
+        </div>
+        <div class="input-note"><strong>Country vs inflation:</strong> country selection controls formatting and default currency. It does not automatically change your inflation rate, taxes, pension rules or financial assumptions.</div>
+        <div class="action-row"><button class="secondary-button" id="copySummaryBtn" type="button">Copy summary</button><button class="primary-button" id="printReportBtn" type="button">Generate inflation report</button></div>
+      </div>
+
+      <aside class="panel result-panel" aria-live="polite">
+        <div class="result-hero">
+          <span class="section-kicker">Future equivalent</span>
+          <div class="result-label" id="futureLabel">To buy what ₹100,000 buys today, you may need</div>
+          <div class="result-main" id="futureValue">₹265,330</div>
+          <p class="result-sub" id="futureSub">after 20 years at 5.0% annual inflation</p>
+        </div>
+        <div class="result-body">
+          <div class="result-row"><span>Total price increase</span><strong id="increasePct">165%</strong></div>
+          <div class="result-row"><span>Inflation multiplier</span><strong id="multiplier">2.65×</strong></div>
+          <div class="result-row"><span>Same nominal amount's future buying power</span><strong id="sameNominalPower">38%</strong></div>
+          <div class="result-row"><span>Equivalent purchasing power of the same nominal amount</span><strong id="sameNominalToday">₹37,689</strong></div>
+          <div class="result-callout"><strong id="purchasingPowerLoss">About 62% less purchasing power</strong><p>If prices rise at the entered rate, keeping the same nominal budget would buy less than it does today.</p></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="analysis-section">
+    <div class="container">
+      <div class="section-heading"><div><span class="section-kicker">What the numbers mean</span><h2>Inflation in plain language</h2></div><p>These are illustrative observations based only on the amount, horizon and inflation rate you entered.</p></div>
+      <div class="glance-grid">
+        <div class="glance-card"><span>Future cost increase</span><strong id="insightIncrease">+165%</strong><small id="insightIncreaseText">relative to today's amount</small></div>
+        <div class="glance-card"><span>Purchasing power remaining</span><strong id="insightPower">38%</strong><small>if the nominal budget stays unchanged</small></div>
+        <div class="glance-card"><span>Approximate doubling time</span><strong id="insightDouble">14.2 years</strong><small>under a constant inflation assumption</small></div>
+        <div class="glance-card"><span>Extra amount needed</span><strong id="insightExtra">₹165,330</strong><small id="insightExtraText">for the same lifestyle or item</small></div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-head"><div><span class="section-kicker">Interactive chart</span><h2>How the future cost may grow</h2></div><p>Hover or tap the chart to compare a lower, entered and higher inflation scenario.</p></div>
+        <div class="legend"><span class="low" id="legendLow">Lower scenario</span><span class="base" id="legendBase">Your assumption</span><span class="high" id="legendHigh">Higher scenario</span></div>
+        <div class="chart-wrap" id="chartWrap"><svg class="chart-svg" id="inflationChart" role="img" aria-label="Inflation scenario chart"></svg><div class="chart-tooltip hidden" id="chartTooltip"></div></div>
+      </div>
+
+      <div class="scenario-grid" id="scenarioGrid">
+        <div class="scenario-card"><span class="scenario-rate" id="lowScenarioRate">3.0% inflation</span><strong id="lowScenarioValue">—</strong><p id="lowScenarioText">Lower scenario</p></div>
+        <div class="scenario-card base"><span class="scenario-rate" id="baseScenarioRate">5.0% inflation</span><strong id="baseScenarioValue">—</strong><p>Your entered assumption</p></div>
+        <div class="scenario-card"><span class="scenario-rate" id="highScenarioRate">7.0% inflation</span><strong id="highScenarioValue">—</strong><p id="highScenarioText">Higher scenario</p></div>
+      </div>
+
+      <div class="table-card">
+        <div class="chart-head"><div><span class="section-kicker">Milestones</span><h2>Future cost checkpoints</h2></div><p>Useful when the same expense continues for many years.</p></div>
+        <div class="table-scroll"><table><thead><tr><th>Year</th><th>Future cost at your rate</th><th>Increase vs today</th><th>Same nominal amount's buying power</th></tr></thead><tbody id="milestoneBody"></tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="explain-section" id="how-it-works">
+    <div class="container">
+      <span class="section-kicker">How to use this tool</span><h2>Three ideas to keep separate</h2>
+      <div class="explain-grid">
+        <article class="explain-card"><h3>Today's money</h3><p>What your current amount can buy now. This is the easiest reference point when thinking about lifestyle or purchasing power.</p></article>
+        <article class="explain-card"><h3>Future nominal money</h3><p>The larger number of currency units you may need later if prices rise. It is not automatically “more wealth”; part of the increase may simply reflect inflation.</p></article>
+        <article class="explain-card"><h3>Country & currency</h3><p>Carrowmont can format the same calculation for different regions and currencies. Changing currency does not perform an exchange-rate conversion.</p></article>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand-block"><a class="brand footer-brand" href="/"><span class="brand-wordmark">CARROWMONT</span></a><strong class="footer-product-name">Inflation Calculator</strong><p>Understand how inflation can change future costs and the purchasing power of money.</p><span class="footer-small">Educational planning tool · Carrowmont</span></div>
+    <div><strong>Calculator</strong><a href="#calculator">Inflation Calculator</a><a href="#how-it-works">How it works</a><a href="methodology.html">Methodology</a></div>
+    <div><strong>Carrowmont</strong><a href="/#tools">All tools</a><a href="/#learn">Learn</a><a href="/about.html">About</a><a href="/contact.html">Contact</a></div>
+    <div><strong>Legal</strong><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
+  </div>
+  <div class="container footer-bottom"><span>© <span data-current-year></span> Carrowmont · Inflation Calculator</span><span>Illustrative estimates, not financial advice.</span></div>
+</footer>
+
+<section class="print-report" id="printReport" aria-hidden="true"></section>
+<script src="site-config.js?v=1.0.0"></script>
+<script src="locale.js?v=1.0.0"></script>
+<script src="site.js?v=1.0.0"></script>
+<script src="app.js?v=1.0.0"></script>
+</body>
+</html>

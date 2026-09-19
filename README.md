@@ -1,0 +1,48 @@
+# Carrowmont Inflation Calculator v1.0.0
+
+A browser-based global inflation calculator designed for `carrowmont.com/inflation-calculator/`.
+
+## Global localization architecture
+
+The shared `locale.js` module stores:
+- selected country / region
+- selected currency
+- locale-aware number formatting
+
+Storage keys are intentionally generic so the same module can later be reused by other Carrowmont tools:
+- `carrowmont_region_v1`
+- `carrowmont_currency_v1`
+
+Supported launch regions:
+- India / INR
+- United States / USD
+- Canada / CAD
+- United Kingdom / GBP
+- Australia / AUD
+- New Zealand / NZD
+- Other / International
+
+Additional currencies are available independently: EUR, SGD and AED.
+
+Changing currency changes the unit and formatting; it does **not** perform FX conversion.
+
+## Calculation
+
+Future cost = amount today × (1 + inflation rate)^years
+
+Today's-equivalent purchasing power = nominal amount ÷ (1 + inflation rate)^years
+
+Scenario chart uses:
+- lower = entered rate - 2 percentage points (floor 0%)
+- base = entered rate
+- higher = entered rate + 2 percentage points
+
+## Deployment
+
+Create a GitHub repository named `inflation-calculator`, upload all files in this folder to the repository root, and enable GitHub Pages from the main branch/root directory.
+
+Expected public path (assuming the same GitHub Pages/custom-domain setup as the retirement tool):
+
+`https://carrowmont.com/inflation-calculator/`
+
+After the tool is live, update the main Carrowmont homepage Inflation Calculator card from “Coming soon” to “Open calculator”.

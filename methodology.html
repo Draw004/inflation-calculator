@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Inflation Calculator Methodology | Carrowmont</title>
+  <meta name="description" content="Understand the calculation methodology used by the Carrowmont Inflation Calculator." />
+  <link rel="canonical" href="https://carrowmont.com/inflation-calculator/methodology.html" />
+  <link rel="stylesheet" href="styles.css?v=1.0.0" />
+  <style>
+    .methodology-hero{padding:70px 0 54px;background:linear-gradient(145deg,#eaf8f6,#f7fafc 55%,#fff7e8);border-bottom:1px solid var(--line)}
+    .methodology-main{padding:60px 0 80px}.methodology-copy{max-width:900px}.methodology-copy h2{margin-top:42px}.methodology-copy h3{margin-top:26px}.methodology-copy p,.methodology-copy li{color:var(--muted)}.methodology-note{margin:25px 0;padding:17px;border:1px solid var(--line);border-radius:14px;background:#f8fbfc}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;background:#f5f8fb;padding:14px;border-radius:10px;border:1px solid var(--line);overflow-x:auto}
+  </style>
+</head>
+<body>
+<header class="site-header"><div class="container header-inner"><div class="brand-cluster"><a class="brand" href="/"><span class="brand-wordmark">CARROWMONT</span></a><span class="brand-divider"></span><a class="product-label" href="index.html">Inflation Calculator</a></div><nav class="top-nav"><a href="index.html#calculator">Calculator</a><a href="index.html#how-it-works">How it works</a><a href="methodology.html">Methodology</a><a href="/#tools">All tools</a><a href="/">Home</a></nav></div></header>
+<main>
+<section class="methodology-hero"><div class="container"><span class="eyebrow">Calculation methodology</span><h1>Simple mathematics. Explicit assumptions.</h1><p class="hero-copy">The Carrowmont Inflation Calculator uses compound inflation to illustrate how prices and purchasing power may change over time.</p></div></section>
+<section class="methodology-main"><div class="container methodology-copy">
+  <div class="methodology-note"><strong>Applies to the current Carrowmont Inflation Calculator.</strong><br />Last reviewed: September 2026. This is an educational model, not a forecast of future inflation.</div>
+  <h2>1. Future cost</h2><p>The calculator compounds the amount you enter using your annual inflation assumption and time horizon.</p><div class="formula">Future cost = Amount today × (1 + inflation rate)<sup>years</sup></div>
+  <h2>2. Purchasing power of the same nominal amount</h2><p>If the number of currency units stays unchanged while prices rise, its purchasing power falls. The tool estimates today's-equivalent purchasing power by discounting the nominal amount by the same inflation assumption.</p><div class="formula">Today's-equivalent value = Nominal future amount ÷ (1 + inflation rate)<sup>years</sup></div>
+  <h2>3. Scenario comparison</h2><p>The chart shows three scenarios: two percentage points below your entered rate, your entered rate, and two percentage points above it. The lower rate is never allowed below 0%.</p>
+  <h2>4. Country and currency</h2><p>Country selection controls locale-aware formatting and a default currency. Users can override the currency. The calculator does not use live foreign-exchange rates and does not convert amounts between currencies.</p>
+  <h2>5. What the tool does not model</h2><ul><li>Country-specific taxes, pensions or benefits.</li><li>Changes in exchange rates.</li><li>Changing inflation from year to year.</li><li>Investment returns.</li><li>Differences between official inflation measures and a household's personal inflation experience.</li></ul>
+  <h2>6. Interpretation</h2><p>Inflation is rarely constant in real life. The tool is designed for scenario planning: change the inflation assumption and compare how sensitive the result is to different rates.</p>
+  <p><a class="secondary-button" href="index.html#calculator" style="display:inline-block;text-decoration:none">Return to calculator</a></p>
+</div></section>
+</main>
+<footer class="site-footer"><div class="container footer-bottom" style="margin-top:0"><span>© <span data-current-year></span> Carrowmont · Inflation Calculator</span><span>Illustrative estimates, not financial advice.</span></div></footer>
+<script src="site-config.js?v=1.0.0"></script><script src="site.js?v=1.0.0"></script>
+</body></html>
