@@ -16,6 +16,9 @@
     milestoneBody: $("milestoneBody"), copySummaryBtn: $("copySummaryBtn"), printReportBtn: $("printReportBtn"), printReport: $("printReport")
   };
 
+  let pendingRegion = L.getRegion();
+  let pendingCurrency = L.getCurrency();
+
   function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
   function num(el, fallback = 0) {
     const raw = String(el.value ?? "").trim();
@@ -31,10 +34,18 @@
   function fm(v) { return L.formatMoney(v); }
   function fmc(v) { return L.formatCompactMoney(v); }
 
+  function resetPendingLocale() {
+    pendingRegion = L.getRegion();
+    pendingCurrency = L.getCurrency();
+    els.regionSelect.value = pendingRegion;
+    els.currencySelect.value = pendingCurrency;
+  }
+
   function populateLocaleControls() {
     els.regionSelect.innerHTML = Object.entries(L.regions).map(([code, p]) => `<option value="${code}">${p.label}</option>`).join("");
     els.currencySelect.innerHTML = Object.entries(L.currencies).map(([code, c]) => `<option value="${code}">${code} — ${c.label}</option>`).join("");
     syncLocaleUI();
+    resetPendingLocale();
   }
 
   function syncLocaleUI() {
@@ -238,24 +249,46 @@
     }));
   }
 
-  els.regionSelect.addEventListener("change", e => L.setRegion(e.target.value, { syncCurrency: true }));
-  els.currencySelect.addEventListener("change", e => L.setCurrency(e.target.value));
+  els.regionSelect.addEventListener("change", e => {
+    pendingRegion = e.target.value;
+    const profile = L.regions[pendingRegion];
+    if (profile && L.currencies[profile.currency]) {
+      pendingCurrency = profile.currency;
+      els.currencySelect.value = pendingCurrency;
+    }
+  });
+  els.currencySelect.addEventListener("change", e => { pendingCurrency = e.target.value; });
 
-  function closeLocaleMenu() {
+  function closeLocaleMenu(discardPending = false) {
+    if (discardPending) resetPendingLocale();
     if (els.localeMenu) els.localeMenu.open = false;
   }
-  if (els.localeDoneBtn) els.localeDoneBtn.addEventListener("click", closeLocaleMenu);
+  if (els.localeDoneBtn) els.localeDoneBtn.addEventListener("click", () => {
+    if (typeof L.setLocale === "function") L.setLocale(pendingRegion, pendingCurrency);
+    else {
+      L.setRegion(pendingRegion, { syncCurrency: false });
+      L.setCurrency(pendingCurrency);
+    }
+    closeLocaleMenu(false);
+  });
+  if (els.localeMenu) els.localeMenu.addEventListener("toggle", () => {
+    if (els.localeMenu.open) resetPendingLocale();
+  });
 
   document.addEventListener("pointerdown", event => {
-    if (els.localeMenu && els.localeMenu.open && !els.localeMenu.contains(event.target)) closeLocaleMenu();
+    if (els.localeMenu && els.localeMenu.open && !els.localeMenu.contains(event.target)) closeLocaleMenu(true);
   });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && els.localeMenu && els.localeMenu.open) {
-      closeLocaleMenu();
+      closeLocaleMenu(true);
       els.localeSummary?.focus();
     }
   });
-  window.addEventListener("carrowmont:localechange", () => { syncLocaleUI(); compute(); });
+  window.addEventListener("carrowmont:localechange", () => {
+    syncLocaleUI();
+    if (!els.localeMenu?.open) resetPendingLocale();
+    compute();
+  });
   [els.amountInput, els.amountType, els.yearsInput, els.inflationInput].forEach(el => el.addEventListener("input", compute));
 
   // Do not rewrite number fields while the user is typing. In particular, keeping a transient value
