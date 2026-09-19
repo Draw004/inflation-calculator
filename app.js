@@ -6,7 +6,7 @@
 
   const $ = id => document.getElementById(id);
   const els = {
-    localeSummary: $("localeSummary"), regionSelect: $("regionSelect"), currencySelect: $("currencySelect"),
+    localeMenu: $("localeMenu"), localeSummary: $("localeSummary"), regionSelect: $("regionSelect"), currencySelect: $("currencySelect"), localeDoneBtn: $("localeDoneBtn"),
     currencyPrefix: $("currencyPrefix"), amountInput: $("amountInput"), amountType: $("amountType"), yearsInput: $("yearsInput"), inflationInput: $("inflationInput"),
     futureLabel: $("futureLabel"), futureValue: $("futureValue"), futureSub: $("futureSub"), increasePct: $("increasePct"), multiplier: $("multiplier"), sameNominalPower: $("sameNominalPower"), sameNominalToday: $("sameNominalToday"), purchasingPowerLoss: $("purchasingPowerLoss"),
     insightIncrease: $("insightIncrease"), insightIncreaseText: $("insightIncreaseText"), insightPower: $("insightPower"), insightDouble: $("insightDouble"), insightExtra: $("insightExtra"), insightExtraText: $("insightExtraText"),
@@ -240,6 +240,21 @@
 
   els.regionSelect.addEventListener("change", e => L.setRegion(e.target.value, { syncCurrency: true }));
   els.currencySelect.addEventListener("change", e => L.setCurrency(e.target.value));
+
+  function closeLocaleMenu() {
+    if (els.localeMenu) els.localeMenu.open = false;
+  }
+  if (els.localeDoneBtn) els.localeDoneBtn.addEventListener("click", closeLocaleMenu);
+
+  document.addEventListener("pointerdown", event => {
+    if (els.localeMenu && els.localeMenu.open && !els.localeMenu.contains(event.target)) closeLocaleMenu();
+  });
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape" && els.localeMenu && els.localeMenu.open) {
+      closeLocaleMenu();
+      els.localeSummary?.focus();
+    }
+  });
   window.addEventListener("carrowmont:localechange", () => { syncLocaleUI(); compute(); });
   [els.amountInput, els.amountType, els.yearsInput, els.inflationInput].forEach(el => el.addEventListener("input", compute));
 

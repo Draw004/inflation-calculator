@@ -1,4 +1,4 @@
-# Carrowmont Inflation Calculator v1.0.1
+# Carrowmont Inflation Calculator v1.0.2
 
 A browser-based global inflation calculator designed for `carrowmont.com/inflation-calculator/`.
 
@@ -71,3 +71,10 @@ After the tool is live, update the main Carrowmont homepage Inflation Calculator
 ## v1.0.1 changes
 - Inflation-rate field now allows normal manual decimal entry such as 4.5 or 5.5 without rewriting the field mid-typing.
 - Expanded country/region and currency support for major economies.
+
+
+## v1.0.2 changes
+- Added a clear **Done** button to the country/currency panel.
+- The panel also closes when clicking outside it or pressing Escape.
+- Country selection still updates the suggested currency immediately, while leaving the panel open so users can optionally override the currency before closing.
+- Manual decimal inflation input from v1.0.1 is retained.
