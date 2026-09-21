@@ -41,7 +41,7 @@
         <a href="/">Home</a>
       </nav>
       <details class="locale-menu" id="localeMenu">
-        <summary id="localeSummary">India · INR</summary>
+        <summary id="localeSummary" aria-label="Choose country and currency"><span class="locale-globe" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 4.5 6 4.5 9S15 18 12 21c-3-3-4.5-6-4.5-9S9 6 12 3z"/></svg></span><span id="localeCurrent">India · INR</span><span class="locale-chevron" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span></summary>
         <div class="locale-popover">
           <h3>Country & currency</h3>
           <p>Choose the context that makes the numbers easiest to understand.</p>
@@ -73,7 +73,7 @@
 
 <main>
   <section class="tool-hero">
-    <div class="container tool-breadcrumb"><a href="/#tools">← Back to all Carrowmont tools</a><span>·</span><span>Inflation Calculator</span></div>
+    <div class="container tool-breadcrumb"><a href="/#tools">← Back to all Carrowmont tools</a></div>
     <div class="container hero-grid">
       <div>
         <span class="eyebrow">Global inflation planning</span>
@@ -97,7 +97,7 @@
     <div class="container calculator-grid">
       <div class="panel input-panel">
         <div class="panel-heading">
-          <div><span class="section-kicker">Your assumptions</span><h2>Model a future cost</h2><p>Enter an amount in today's money, then choose the time horizon and annual inflation assumption.</p></div>
+          <div><span class="section-kicker">Your assumptions</span><h2>Model a future cost</h2><p>Enter an amount in today's money, then choose the time horizon and annual inflation assumption.</p></div><button class="text-button" id="resetBtn" type="button">Reset to Defaults</button>
         </div>
 
         <div class="section-rule"></div>
@@ -120,7 +120,7 @@
           </label>
         </div>
         <div class="input-note"><strong>Country vs inflation:</strong> country selection controls formatting and default currency. It does not automatically change your inflation rate, taxes, pension rules or financial assumptions.</div>
-        <div class="action-row"><button class="secondary-button" id="copySummaryBtn" type="button">Copy summary</button><button class="primary-button" id="printReportBtn" type="button">Generate inflation report</button></div>
+        <div class="action-row"><button class="secondary-button" id="copySummaryBtn" type="button">Copy Summary</button><button class="primary-button" id="printReportBtn" type="button">Generate Inflation Report</button></div>
       </div>
 
       <aside class="panel result-panel" aria-live="polite">
@@ -194,8 +194,10 @@
 
 <section class="print-report" id="printReport" aria-hidden="true"></section>
 <script src="site-config.js?v=1.0.2"></script>
-<script src="locale.js?v=1.0.3"></script>
+<script src="locale.js?v=1.0.2"></script>
 <script src="site.js?v=1.0.2"></script>
+<script src="pdf-export.js?v=1.1"></script>
+<script src="inflation-pdf-renderer.js?v=1.1"></script>
 <script src="app.js?v=1.0.3"></script>
 </body>
 </html>

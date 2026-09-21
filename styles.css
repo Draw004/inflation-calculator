@@ -226,3 +226,13 @@ td strong { color: var(--ink); }
   .print-report .report-note { margin-top: 18px; padding: 11px; border-left: 3px solid #17202a; background: #f5f7f8; font-size: 10px; }
   .print-report .page-break { break-before: page; }
 }
+
+/* Standardized Carrowmont tool controls */
+.locale-menu summary{appearance:none;-webkit-appearance:none;min-width:170px;display:flex;align-items:center;justify-content:center;gap:9px;line-height:1;padding:12px 18px}
+.locale-menu summary::marker{content:""}
+.locale-globe{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 18px;line-height:0}
+.locale-globe svg{width:18px;height:18px;display:block;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.locale-chevron{width:14px;height:14px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 14px}
+.locale-chevron svg{width:14px;height:14px;display:block;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.text-button{border:0;background:transparent;color:var(--teal-dark);font-weight:850;cursor:pointer;padding:6px 0;white-space:nowrap}
+.text-button:hover{text-decoration:underline}

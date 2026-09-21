@@ -6,18 +6,15 @@
 
   const $ = id => document.getElementById(id);
   const els = {
-    localeMenu: $("localeMenu"), localeSummary: $("localeSummary"), regionSelect: $("regionSelect"), currencySelect: $("currencySelect"), localeDoneBtn: $("localeDoneBtn"),
+    localeMenu: $("localeMenu"), localeSummary: $("localeSummary"), localeCurrent: $("localeCurrent"), regionSelect: $("regionSelect"), currencySelect: $("currencySelect"), localeDoneBtn: $("localeDoneBtn"),
     currencyPrefix: $("currencyPrefix"), amountInput: $("amountInput"), amountType: $("amountType"), yearsInput: $("yearsInput"), inflationInput: $("inflationInput"),
     futureLabel: $("futureLabel"), futureValue: $("futureValue"), futureSub: $("futureSub"), increasePct: $("increasePct"), multiplier: $("multiplier"), sameNominalPower: $("sameNominalPower"), sameNominalToday: $("sameNominalToday"), purchasingPowerLoss: $("purchasingPowerLoss"),
     insightIncrease: $("insightIncrease"), insightIncreaseText: $("insightIncreaseText"), insightPower: $("insightPower"), insightDouble: $("insightDouble"), insightExtra: $("insightExtra"), insightExtraText: $("insightExtraText"),
     heroExampleToday: $("heroExampleToday"), heroExampleFuture: $("heroExampleFuture"),
     legendLow: $("legendLow"), legendBase: $("legendBase"), legendHigh: $("legendHigh"), chart: $("inflationChart"), chartWrap: $("chartWrap"), chartTooltip: $("chartTooltip"),
     lowScenarioRate: $("lowScenarioRate"), lowScenarioValue: $("lowScenarioValue"), lowScenarioText: $("lowScenarioText"), baseScenarioRate: $("baseScenarioRate"), baseScenarioValue: $("baseScenarioValue"), highScenarioRate: $("highScenarioRate"), highScenarioValue: $("highScenarioValue"), highScenarioText: $("highScenarioText"),
-    milestoneBody: $("milestoneBody"), copySummaryBtn: $("copySummaryBtn"), printReportBtn: $("printReportBtn"), printReport: $("printReport")
+    milestoneBody: $("milestoneBody"), copySummaryBtn: $("copySummaryBtn"), printReportBtn: $("printReportBtn"), printReport: $("printReport"), resetBtn: $("resetBtn")
   };
-
-  let pendingRegion = L.getRegion();
-  let pendingCurrency = L.getCurrency();
 
   function clamp(n, min, max) { return Math.min(max, Math.max(min, n)); }
   function num(el, fallback = 0) {
@@ -34,18 +31,10 @@
   function fm(v) { return L.formatMoney(v); }
   function fmc(v) { return L.formatCompactMoney(v); }
 
-  function resetPendingLocale() {
-    pendingRegion = L.getRegion();
-    pendingCurrency = L.getCurrency();
-    els.regionSelect.value = pendingRegion;
-    els.currencySelect.value = pendingCurrency;
-  }
-
   function populateLocaleControls() {
     els.regionSelect.innerHTML = Object.entries(L.regions).map(([code, p]) => `<option value="${code}">${p.label}</option>`).join("");
     els.currencySelect.innerHTML = Object.entries(L.currencies).map(([code, c]) => `<option value="${code}">${code} — ${c.label}</option>`).join("");
     syncLocaleUI();
-    resetPendingLocale();
   }
 
   function syncLocaleUI() {
@@ -53,7 +42,7 @@
     const currency = L.getCurrency();
     els.regionSelect.value = L.getRegion();
     els.currencySelect.value = currency;
-    els.localeSummary.textContent = `${region.label} · ${currency}`;
+    if (els.localeCurrent) els.localeCurrent.textContent = `${region.label} · ${currency}`; else els.localeSummary.textContent = `${region.label} · ${currency}`;
     els.currencyPrefix.textContent = L.currencySymbol(currency);
     els.heroExampleToday.textContent = fm(100000);
     els.heroExampleFuture.textContent = fm(futureValue(100000, 5, 20));
@@ -201,6 +190,14 @@
     svg.onmousemove = move; svg.onmouseleave = leave; svg.ontouchmove = move; svg.ontouchend = leave;
   }
 
+  function resetToDefaults() {
+    els.amountInput.value = 100000;
+    els.amountType.value = 'monthly';
+    els.yearsInput.value = 20;
+    els.inflationInput.value = 5;
+    compute();
+  }
+
   async function copySummary() {
     const s = getState();
     const factor = Math.pow(1 + s.rate/100, s.years);
@@ -240,55 +237,42 @@
     els.printReport.innerHTML = `<div class="report-brand">CARROWMONT</div><h1>Inflation Planning Report</h1><div class="report-meta">Generated ${new Date().toLocaleDateString(L.getLocale())} · ${L.getProfile().label} · ${L.getCurrency()}</div><div class="report-hero"><span>Future equivalent of ${fm(s.amount)}${suffix}</span><strong>${fm(future)}${suffix}</strong><span>after ${s.years} years at ${s.rate.toFixed(1)}% annual inflation</span></div><h2>Summary</h2><table><tbody><tr><td>Amount today</td><td>${fm(s.amount)}${suffix}</td></tr><tr><td>Inflation assumption</td><td>${s.rate.toFixed(1)}%</td></tr><tr><td>Total price increase</td><td>${Math.round(increase)}%</td></tr><tr><td>Same nominal amount's purchasing power remaining</td><td>${Math.round(remaining)}%</td></tr><tr><td>Today's-equivalent purchasing power of the same nominal amount</td><td>${fm(sameNominalToday)}${suffix}</td></tr></tbody></table><h2>Scenario comparison</h2><table><thead><tr><th>Scenario</th><th>Inflation</th><th>Future equivalent</th></tr></thead><tbody><tr><td>Lower</td><td>${lowRate.toFixed(1)}%</td><td>${fm(lowFuture)}${suffix}</td></tr><tr><td>Your assumption</td><td>${s.rate.toFixed(1)}%</td><td>${fm(future)}${suffix}</td></tr><tr><td>Higher</td><td>${highRate.toFixed(1)}%</td><td>${fm(highFuture)}${suffix}</td></tr></tbody></table><div class="page-break"></div><h2>Future cost checkpoints</h2><table><thead><tr><th>Year</th><th>Future cost</th><th>Increase</th><th>Purchasing power remaining</th></tr></thead><tbody>${milestones}</tbody></table><h2>Methodology</h2><p>Future cost = amount today × (1 + inflation rate)<sup>years</sup>. Country selection controls formatting and default currency only. The calculator does not perform foreign-exchange conversion or provide a forecast of future inflation.</p><div class="report-note"><strong>Important:</strong> This report is an educational illustration based on the assumptions entered. Inflation varies over time and between households, goods and services. This is not individualized financial, tax, legal or investment advice.</div>`;
   }
 
-  function printReport() {
-    const oldTitle = document.title;
-    document.title = `Carrowmont Inflation Report - ${L.getCurrency()} - ${getState().years} years`;
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      window.print();
-      setTimeout(() => { document.title = oldTitle; }, 500);
-    }));
+  async function generateInflationReport() {
+    if(!window.CarrowmontPdfExport || !window.CarrowmontInflationPdfRenderer){
+      alert('The PDF download engine did not load. Please refresh the page and try again.');
+      return;
+    }
+    const s=getState(),factor=Math.pow(1+s.rate/100,s.years),future=s.amount*factor,sameNominalToday=presentEquivalent(s.amount,s.rate,s.years),increase=(factor-1)*100,remaining=100/factor;
+    const lowRate=Math.max(0,s.rate-2),highRate=s.rate+2,lowFuture=futureValue(s.amount,lowRate,s.years),highFuture=futureValue(s.amount,highRate,s.years),suffix=amountSuffix();
+    const milestones=milestoneYears(s.years).map(y=>{const f=futureValue(s.amount,s.rate,y),fac=Math.pow(1+s.rate/100,y);return{label:y===0?'Today':`Year ${y}`,future:f,increase:y===0?'—':`+${Math.round((fac-1)*100)}%`,power:`${Math.round(100/fac)}%`};});
+    const model={state:s,future,sameNominalToday,increase,remaining,lowRate,highRate,lowFuture,highFuture,suffix,milestones};
+    const original=els.printReportBtn.textContent;els.printReportBtn.disabled=true;els.printReportBtn.setAttribute('aria-busy','true');els.printReportBtn.textContent='Preparing PDF...';
+    try{
+      const canvases=await window.CarrowmontInflationPdfRenderer.render(model),d=new Date(),yyyy=d.getFullYear(),mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
+      await window.CarrowmontPdfExport.downloadCanvases(canvases,{filename:`inflation-planning-report-${yyyy}-${mm}-${dd}.pdf`,quality:.95});
+      els.printReportBtn.textContent='Report Downloaded';
+    }catch(err){console.error('Inflation report PDF generation failed',err);els.printReportBtn.textContent='PDF Failed - Try Again';alert('The report could not be generated. Please refresh the page and try again.');}
+    finally{els.printReportBtn.disabled=false;els.printReportBtn.removeAttribute('aria-busy');setTimeout(()=>{if(els.printReportBtn.textContent!=='Preparing PDF...')els.printReportBtn.textContent=original;},1800);}
   }
 
-  els.regionSelect.addEventListener("change", e => {
-    pendingRegion = e.target.value;
-    const profile = L.regions[pendingRegion];
-    if (profile && L.currencies[profile.currency]) {
-      pendingCurrency = profile.currency;
-      els.currencySelect.value = pendingCurrency;
-    }
-  });
-  els.currencySelect.addEventListener("change", e => { pendingCurrency = e.target.value; });
+  els.regionSelect.addEventListener("change", e => L.setRegion(e.target.value, { syncCurrency: true }));
+  els.currencySelect.addEventListener("change", e => L.setCurrency(e.target.value));
 
-  function closeLocaleMenu(discardPending = false) {
-    if (discardPending) resetPendingLocale();
+  function closeLocaleMenu() {
     if (els.localeMenu) els.localeMenu.open = false;
   }
-  if (els.localeDoneBtn) els.localeDoneBtn.addEventListener("click", () => {
-    if (typeof L.setLocale === "function") L.setLocale(pendingRegion, pendingCurrency);
-    else {
-      L.setRegion(pendingRegion, { syncCurrency: false });
-      L.setCurrency(pendingCurrency);
-    }
-    closeLocaleMenu(false);
-  });
-  if (els.localeMenu) els.localeMenu.addEventListener("toggle", () => {
-    if (els.localeMenu.open) resetPendingLocale();
-  });
+  if (els.localeDoneBtn) els.localeDoneBtn.addEventListener("click", closeLocaleMenu);
 
   document.addEventListener("pointerdown", event => {
-    if (els.localeMenu && els.localeMenu.open && !els.localeMenu.contains(event.target)) closeLocaleMenu(true);
+    if (els.localeMenu && els.localeMenu.open && !els.localeMenu.contains(event.target)) closeLocaleMenu();
   });
   document.addEventListener("keydown", event => {
     if (event.key === "Escape" && els.localeMenu && els.localeMenu.open) {
-      closeLocaleMenu(true);
+      closeLocaleMenu();
       els.localeSummary?.focus();
     }
   });
-  window.addEventListener("carrowmont:localechange", () => {
-    syncLocaleUI();
-    if (!els.localeMenu?.open) resetPendingLocale();
-    compute();
-  });
+  window.addEventListener("carrowmont:localechange", () => { syncLocaleUI(); compute(); });
   [els.amountInput, els.amountType, els.yearsInput, els.inflationInput].forEach(el => el.addEventListener("input", compute));
 
   // Do not rewrite number fields while the user is typing. In particular, keeping a transient value
@@ -303,8 +287,8 @@
   [els.yearsInput, els.inflationInput].forEach(el => el.addEventListener("change", normalizeNumericInputs));
 
   els.copySummaryBtn.addEventListener("click", copySummary);
-  els.printReportBtn.addEventListener("click", printReport);
-  window.addEventListener("beforeprint", () => compute());
+  els.printReportBtn.addEventListener("click", generateInflationReport);
+  if (els.resetBtn) els.resetBtn.addEventListener("click", resetToDefaults);
 
   populateLocaleControls();
   compute();
