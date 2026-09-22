@@ -138,7 +138,7 @@
 
   function renderChart(s, lowRate, highRate) {
     const svg = els.chart;
-    const W = 1000, H = 330, left = 92, right = 26, top = 22, bottom = 52;
+    const W = 1000, H = 350, left = 92, right = 26, top = 76, bottom = 52;
     const iw = W - left - right, ih = H - top - bottom;
     const points = [];
     const steps = Math.max(20, s.years * 2);
@@ -164,7 +164,19 @@
     }
     const xTicks = [0, Math.round(s.years/2), s.years];
     xTicks.forEach(v => { html += `<text class="chart-axis-label" x="${x(v)}" y="${H-18}" text-anchor="middle">${v === 0 ? "Today" : `Year ${v}`}</text>`; });
+    const finalValues=[
+      {label:`Lower (${lowRate.toFixed(1)}%)`,value:futureValue(s.amount,lowRate,s.years),color:'#91a3b5'},
+      {label:`Your assumption (${s.rate.toFixed(1)}%)`,value:futureValue(s.amount,s.rate,s.years),color:'#0e827a'},
+      {label:`Higher (${highRate.toFixed(1)}%)`,value:futureValue(s.amount,highRate,s.years),color:'#173d5c'}
+    ];
+    const bw=272,bh=48,by=10;
+    finalValues.forEach((item,i)=>{
+      const bx=i===0?left:(i===1?left+(iw-bw)/2:W-right-bw);
+      html+=`<g class="chart-static-value"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="8" fill="#fff" stroke="#c9d9e2"/><line x1="${bx+12}" x2="${bx+34}" y1="${by+17}" y2="${by+17}" stroke="${item.color}" stroke-width="4"/><text x="${bx+42}" y="${by+20}" font-size="11" font-weight="800" fill="#102945">${item.label}</text><text x="${bx+12}" y="${by+39}" font-size="10.5" font-weight="700" fill="#405b75">Year ${s.years}: ${fmc(item.value)}</text></g>`;
+    });
     html += `<path class="chart-line-low" d="${path("low")}"/><path class="chart-line-base" d="${path("base")}"/><path class="chart-line-high" d="${path("high")}"/>`;
+    const midYear=Math.round(s.years/2),midValue=futureValue(s.amount,s.rate,midYear),mx=x(midYear),my=yy(midValue);
+    html += `<circle cx="${mx}" cy="${my}" r="5" fill="#0e827a" stroke="#fff" stroke-width="2"/><rect x="${mx-57}" y="${Math.max(top+5,my-31)}" width="114" height="22" rx="7" fill="#fff" stroke="#b8d9d5"/><text x="${mx}" y="${Math.max(top+20,my-16)}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#08756d">Year ${midYear}: ${fmc(midValue)}</text>`;
     html += `<g id="hoverLayer"><line id="hoverGuide" class="chart-guide" x1="${left}" y1="${top}" x2="${left}" y2="${top+ih}" visibility="hidden"/><circle id="hoverLow" class="chart-point" r="5" fill="#91a3b5" visibility="hidden"/><circle id="hoverBase" class="chart-point" r="5.5" fill="#0e827a" visibility="hidden"/><circle id="hoverHigh" class="chart-point" r="5" fill="#173d5c" visibility="hidden"/></g>`;
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     svg.innerHTML = html;
@@ -238,21 +250,27 @@
   }
 
   async function generateInflationReport() {
+    const status=document.getElementById('reportDownloadStatus');
     if(!window.CarrowmontPdfExport || !window.CarrowmontInflationPdfRenderer){
-      alert('The PDF download engine did not load. Please refresh the page and try again.');
+      if(status)status.textContent='The report could not be generated. Please refresh the page and try again.';
       return;
     }
     const s=getState(),factor=Math.pow(1+s.rate/100,s.years),future=s.amount*factor,sameNominalToday=presentEquivalent(s.amount,s.rate,s.years),increase=(factor-1)*100,remaining=100/factor;
     const lowRate=Math.max(0,s.rate-2),highRate=s.rate+2,lowFuture=futureValue(s.amount,lowRate,s.years),highFuture=futureValue(s.amount,highRate,s.years),suffix=amountSuffix();
     const milestones=milestoneYears(s.years).map(y=>{const f=futureValue(s.amount,s.rate,y),fac=Math.pow(1+s.rate/100,y);return{label:y===0?'Today':`Year ${y}`,future:f,increase:y===0?'—':`+${Math.round((fac-1)*100)}%`,power:`${Math.round(100/fac)}%`};});
     const model={state:s,future,sameNominalToday,increase,remaining,lowRate,highRate,lowFuture,highFuture,suffix,milestones};
-    const original=els.printReportBtn.textContent;els.printReportBtn.disabled=true;els.printReportBtn.setAttribute('aria-busy','true');els.printReportBtn.textContent='Preparing PDF...';
+    els.printReportBtn.disabled=true;els.printReportBtn.setAttribute('aria-busy','true');
+    if(status)status.textContent='Preparing your report...';
     try{
       const canvases=await window.CarrowmontInflationPdfRenderer.render(model),d=new Date(),yyyy=d.getFullYear(),mm=String(d.getMonth()+1).padStart(2,'0'),dd=String(d.getDate()).padStart(2,'0');
       await window.CarrowmontPdfExport.downloadCanvases(canvases,{filename:`inflation-planning-report-${yyyy}-${mm}-${dd}.pdf`,quality:.95});
-      els.printReportBtn.textContent='Report Downloaded';
-    }catch(err){console.error('Inflation report PDF generation failed',err);els.printReportBtn.textContent='PDF Failed - Try Again';alert('The report could not be generated. Please refresh the page and try again.');}
-    finally{els.printReportBtn.disabled=false;els.printReportBtn.removeAttribute('aria-busy');setTimeout(()=>{if(els.printReportBtn.textContent!=='Preparing PDF...')els.printReportBtn.textContent=original;},1800);}
+      if(status)status.textContent='Report has been downloaded.';
+    }catch(err){
+      console.error('Inflation report PDF generation failed',err);
+      if(status)status.textContent='The report could not be generated. Please refresh the page and try again.';
+    }finally{
+      els.printReportBtn.disabled=false;els.printReportBtn.removeAttribute('aria-busy');
+    }
   }
 
   els.regionSelect.addEventListener("change", e => L.setRegion(e.target.value, { syncCurrency: true }));
