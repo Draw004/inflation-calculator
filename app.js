@@ -32,7 +32,12 @@
   function fmc(v) { return L.formatCompactMoney(v); }
 
   function populateLocaleControls() {
-    els.regionSelect.innerHTML = Object.entries(L.regions).map(([code, p]) => `<option value="${code}">${p.label}</option>`).join("");
+    const regionEntries = Object.entries(L.regions).sort(([codeA, a], [codeB, b]) => {
+      if (codeA === "OTHER") return 1;
+      if (codeB === "OTHER") return -1;
+      return a.label.localeCompare(b.label, "en", { sensitivity: "base" });
+    });
+    els.regionSelect.innerHTML = regionEntries.map(([code, p]) => `<option value="${code}">${p.label}</option>`).join("");
     els.currencySelect.innerHTML = Object.entries(L.currencies).map(([code, c]) => `<option value="${code}">${code} — ${c.label}</option>`).join("");
     syncLocaleUI();
   }
