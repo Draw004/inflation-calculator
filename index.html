@@ -13,7 +13,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://carrowmont.com/inflation-calculator/" />
   <meta name="twitter:card" content="summary" />
-  <link rel="stylesheet" href="styles.css?v=20260926.1" />
+  <link rel="stylesheet" href="styles.css?v=20260927.1" />
   <script type="application/ld+json">{
     "@context":"https://schema.org",
     "@type":"WebApplication",
@@ -185,12 +185,12 @@
 
 <footer class="site-footer">
   <div class="container footer-grid">
-    <div class="footer-brand-block"><a class="brand footer-brand" href="/"><span class="brand-wordmark">CARROWMONT</span></a><strong class="footer-product-name">Inflation Calculator</strong><p>Understand how inflation can change future costs and the purchasing power of money.</p><span class="footer-small">Educational planning tool · Carrowmont</span></div>
-    <div><strong>Calculator</strong><a href="#calculator">Inflation Calculator</a><a href="#how-it-works">How it works</a><a href="methodology.html">Methodology</a></div>
-    <div><strong>Carrowmont</strong><a href="/#tools">All tools</a><a href="/#learn">Learn</a><a href="/about.html">About</a><a href="/contact.html">Contact</a></div>
-    <div><strong>Legal</strong><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
+    <div class="footer-brand-block"><a class="footer-wordmark" href="/">CARROWMONT</a><strong class="footer-product-name">Inflation Calculator</strong><p>Understand how inflation can change future costs and the purchasing power of money.</p><span class="footer-small">Educational planning tool &middot; Carrowmont</span></div>
+    <div class="footer-col"><strong>Tools</strong><a class="footer-investment-link" href="/sip-calculator/">SIP Calculator</a><a href="/retirement-calculator/">Retirement Planner</a><a href="/inflation-calculator/">Inflation Calculator</a><a href="/goal-planner/">Goal Planner</a><a href="/financial-independence/">Financial Independence</a><a href="/#tools">All tools</a></div>
+    <div class="footer-col"><strong>Carrowmont</strong><a href="/learn.html">Learn</a><a href="/about.html">About</a><a href="/methodology.html">Methodology</a><a href="/contact.html">Contact</a></div>
+    <div class="footer-col"><strong>Legal</strong><a href="/disclaimer.html">Disclaimer</a><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a></div>
   </div>
-  <div class="container footer-bottom"><span>© <span data-current-year></span> Carrowmont · Inflation Calculator</span><span>Illustrative estimates, not financial advice.</span></div>
+  <div class="container footer-bottom"><span>&copy; 2026 Carrowmont &middot; <span class="footer-product-bottom">Inflation Calculator</span></span><span>Illustrative estimates, not financial advice.</span></div>
 </footer>
 
 <section class="print-report" id="printReport" aria-hidden="true"></section>
@@ -202,5 +202,19 @@
 <script src="inflation-pdf-renderer.js?v=20260925.1"></script>
 <script src="app.js?v=20260922.4"></script>
 <script src="analytics.js?v=1.0.1" data-carrowmont-tool="inflation_calculator" data-track-tool-open="true"></script>
+
+<script>
+(function(){
+  var L=window.CarrowmontLocale; if(!L) return;
+  function syncFooterInvestmentName(){
+    var india=L.getRegion&&L.getRegion()==='IN';
+    var label=india?'SIP Calculator':'Recurring Investment Calculator';
+    document.querySelectorAll('.footer-investment-link').forEach(function(el){el.textContent=label;});
+    document.querySelectorAll('.footer-investment-product-name,.footer-current-product').forEach(function(el){el.textContent=label;});
+  }
+  syncFooterInvestmentName();
+  window.addEventListener('carrowmont:localechange',syncFooterInvestmentName);
+})();
+</script>
 </body>
 </html>
