@@ -2,6 +2,8 @@
   "use strict";
 
   const L = window.CarrowmontLocale;
+  const Core = window.CarrowmontInflationCore;
+  if (!Core) throw new Error('Carrowmont Inflation core is unavailable.');
   if (!L) return;
 
   const $ = id => document.getElementById(id);
@@ -23,8 +25,8 @@
     const n = Number(raw);
     return Number.isFinite(n) ? n : fallback;
   }
-  function futureValue(amount, ratePct, years) { return amount * Math.pow(1 + ratePct / 100, years); }
-  function presentEquivalent(amount, ratePct, years) { return amount / Math.pow(1 + ratePct / 100, years); }
+  function futureValue(amount, ratePct, years) { return Core.futureValue(amount, ratePct, years); }
+  function presentEquivalent(amount, ratePct, years) { return Core.presentEquivalent(amount, ratePct, years); }
   function pct(value, digits = 0) { return `${Number(value).toFixed(digits)}%`; }
   function amountSuffix() { const t = els.amountType.value; return t === "monthly" ? "/mo" : t === "annual" ? "/yr" : ""; }
   function amountTypeLabel() { const t = els.amountType.value; return t === "monthly" ? "monthly spending" : t === "annual" ? "annual spending" : "amount"; }
@@ -63,13 +65,8 @@
 
   function compute() {
     const s = getState();
-    const factor = Math.pow(1 + s.rate / 100, s.years);
-    const future = s.amount * factor;
-    const sameNominalToday = presentEquivalent(s.amount, s.rate, s.years);
-    const increase = (factor - 1) * 100;
-    const remaining = factor === 0 ? 100 : (1 / factor) * 100;
-    const loss = 100 - remaining;
-    const extra = future - s.amount;
+    const result = Core.calculate(s);
+    const { factor, future, sameNominalToday, increase, remaining, loss, extra } = result;
     const suffix = amountSuffix();
     const type = amountTypeLabel();
 
